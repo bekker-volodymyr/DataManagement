@@ -3,8 +3,8 @@
     public class Student
     {
         public int Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string FirstName { get; set; } = null!;
+        public string LastName { get; set; } = null!;
         public int Age { get; set; }
         // Додаємо поле Scholarship
         // float? - nullable тип, вказує EFCore, що поле може бути null

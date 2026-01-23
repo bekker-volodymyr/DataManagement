@@ -21,11 +21,7 @@ namespace EFCoreIntro
             db.SaveChanges();
 
             // Читання даних
-            var students = db.Students.ToList();
-            foreach (var s in students)
-            {
-                Console.WriteLine($"Id: {s.Id}\nІм'я: {s.LastName} {s.FirstName}\nВік: {s.Age}\nScholarship: {(s.Scholarship is null ? 0 : s.Scholarship)}");
-            }
+            PrintStudents(db);
 
             Console.Write("Введіть Id студента, щоб його видалити: ");
             int id = Int32.Parse(Console.ReadLine());

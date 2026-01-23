@@ -8,7 +8,7 @@ namespace EFCoreIntro
     {
         public DbSet<Student> Students { get; set; }
 
-        private readonly string _connectionString;
+        private readonly string? _connectionString;
 
         public AppDbContext()
         {
