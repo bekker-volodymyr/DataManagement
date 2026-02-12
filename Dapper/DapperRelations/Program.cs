@@ -20,7 +20,7 @@ public class Program
         //ReadLoans(connection);
     }
 
-    private static void ReadLoans(SqliteConnection connection)
+    private static List<Visitor> ReadLoans(SqliteConnection connection)
     {
         string readLoans = @"
             SELECT 
@@ -57,22 +57,7 @@ public class Program
             splitOn: "VisitorId,LoanDate,ReturnDate"
         ).Distinct().ToList();
 
-        foreach (var v in visitors)
-        {
-
-            Console.WriteLine($"{v.Name} loans: ");
-            if (v.Loans.Count == 0)
-            {
-                Console.WriteLine("\tNo loans");
-            }
-            else
-            {
-                foreach (var l in v.Loans)
-                {
-                    Console.WriteLine($"\t{l.Book.Title} -- {l.LoanDate} -- {(l.ReturnDate is null ? "Waiting to return" : l.ReturnDate)}");
-                }
-            }
-        }
+        return visitors;
     }
 
     private static void AddLoan(SqliteConnection connection)
@@ -80,9 +65,12 @@ public class Program
         var book = connection.QueryFirstOrDefault("SELECT * FROM Books LIMIT 1;");
         var visitor = connection.QueryFirstOrDefault("SELECT * FROM Visitors LIMIT 1;");
 
+        string query = @"INSERT INTO BookLoans (BookId, VisitorId, LoanDate, ReturnDate) 
+                        VALUES (@BookId, @VisitorId, @LoanDate, @ReturnDate);";
+
         connection.Execute(
-            "INSERT INTO BookLoans (BookId, VisitorId, LoanDate, ReturnDate) VALUES (@BookId, @VisitorId, @LoanDate, @ReturnDate);",
-            new
+            query,
+            new // Анонімний об'єкт - об'єкт, для якого не створено класу
             {
                 BookId = book.Id,
                 VisitorId = visitor.Id,
@@ -91,7 +79,7 @@ public class Program
             });
     }
 
-    private static void ReadAuthorsWithBooks(SqliteConnection connection)
+    private static List<Author> ReadAuthorsWithBooks(SqliteConnection connection)
     {
         string readBooks = @"
             SELECT a.Id, a.Name,
@@ -121,14 +109,7 @@ public class Program
             splitOn: "Id"
         ).Distinct().ToList();
 
-        foreach (var a in authors)
-        {
-            Console.WriteLine(a.Name);
-            foreach (var b in a.Books)
-            {
-                Console.WriteLine($"\t{b.Title}");
-            }
-        }
+        return authors;
     }
 
     private static void AddAuthorWithBooks(SqliteConnection connection)
